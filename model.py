@@ -3,6 +3,12 @@ from config import MyApp
 database = MyApp.database
 
 
+class Todo(database.Model):
+    id = database.Column(database.Integer, primary_key=True)
+    name = database.Column(database.String(255), nullable=False)
+    end_datetime = database.Column(database.DateTime, nullable=True)
+
+
 class Parent(database.Model):
     id = database.Column(database.Integer, primary_key=True)
     name = database.Column(database.String(255), nullable=False)

@@ -7,15 +7,19 @@
     <script src="/static/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
 </head>
 <body>
-<div class="container w-75">
+<div class="container w-100">
     <br>
-    <div class="d-flex" style="height:75rem;">
-        <div class="container shadow bg-light p-4 mt-2" style="height:40rem; width:18rem;">
-            {% include "navbar.html" %}
+    <div class="row">
+        <div class="col-md-2">
+            <div class="shadow bg-light p-4 mt-2" style="height:40rem;">
+                {% include "navbar.html" %}
+            </div>
         </div>
-        <div class="container shadow bg-light p-4 mt-2 ms-4">
-            {% block content %}
-            {% endblock %}
+        <div class="col-md-10">
+            <div class="shadow bg-light p-4 mt-2" style="height:70rem;">
+                {% block content %}
+                {% endblock %}
+            </div>
         </div>
     </div>
 </div>
