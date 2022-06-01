@@ -9,6 +9,7 @@ database = MyApp.database
 
 
 def config():
-    admin = Admin(app, name='FlaskTemplateApp', template_mode='bootstrap3')
-    admin.add_view(ModelView(Parent, database.session, "Родитель"))
-    admin.add_view(ModelView(Children, database.session, "Ребенок"))
+    admin = Admin(app, name='TimeBudget', template_mode='bootstrap3')
+    admin.add_view(ModelView(Week, database.session, "Неделя"))
+    admin.add_view(ModelView(Day, database.session, "День"))
+    admin.add_view(ModelView(Todo, database.session, "Задача"))
