@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>TimeBudget</title>
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+    <script src="/static/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+</head>
+<body>
+<div class="container w-75">
+    <br>
+    <div class="d-flex" style="height:75rem;">
+        <div class="container shadow bg-light p-4 mt-2" style="height:40rem; width:18rem;">
+            {% include "navbar.html" %}
+        </div>
+        <div class="container shadow bg-light p-4 mt-2 ms-4">
+            {% block content %}
+            {% endblock %}
+        </div>
+    </div>
+</div>
+</body>
+</html>
