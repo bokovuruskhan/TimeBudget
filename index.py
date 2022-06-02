@@ -72,6 +72,20 @@ def add_category():
     return categories()
 
 
+@app.route("/week/copy", methods=["POST"])
+@login_required
+def copy_week():
+    week_id = request.form.get("week_id")
+    week = find_by_id(week_id, Week)
+    current_week = current_user.get_current_week()
+    if week != current_week:
+        for i in range(7):
+            for todo in week.days[i].todos:
+                current_week.days[i].todos.append(Todo(name=todo.name, category_id=todo.category_id ))
+        save(current_week)
+    return profile()
+
+
 @app.route("/week/<week_id>/show")
 @login_required
 def show_week(week_id):
