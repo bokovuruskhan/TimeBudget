@@ -85,6 +85,20 @@ class Category(database.Model):
                                   backref=database.backref("category", lazy=True))
     user_id = database.Column(database.Integer, database.ForeignKey('user.id'), nullable=False)
 
+    def get_total_hours_spent(self):
+        hours = 0
+        for todo in self.todos:
+            if todo.end_time is not None:
+                hours += todo.end_time.hour
+        return hours
+
+    def get_number_completed_todos(self):
+        number = 0
+        for todo in self.todos:
+            if todo.open is False:
+                number += 1
+        return number
+
     @staticmethod
     def add(name, user):
         save(Category(name=name, user=user))

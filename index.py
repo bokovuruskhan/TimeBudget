@@ -1,6 +1,6 @@
 from datetime import datetime
 from flask_login import login_required, LoginManager, logout_user, login_user, current_user
-from flask import render_template, request
+from flask import render_template, request, send_from_directory
 from model import Week, Todo, save, find_by_id, delete, get_all, Category, User
 import admin
 from config import MyApp
@@ -68,8 +68,8 @@ def delete_todo():
 @login_required
 def add_category():
     name = request.form.get("name")
-    Category.add(name,current_user)
-    return index()
+    Category.add(name, current_user)
+    return categories()
 
 
 @app.route("/week/<week_id>/show")
@@ -112,12 +112,26 @@ def registration():
     return render_template("registration.html")
 
 
+@app.route("/report")
+@login_required
+def report():
+    filename = f"{datetime.now().date()}.html"
+    with open(f"reports/{filename}", "w", encoding=MyApp.ENCODING) as file:
+        file.write(render_template("report.html", current_user=current_user))
+    return send_from_directory("reports", filename, as_attachment=True)
+
+
+@app.route("/profile")
+@login_required
+def profile():
+    return render_template("profile.html")
+
+
 @app.route("/")
 @login_required
 def index(week_days=None):
     if week_days is None:
         week_days = current_user.get_current_week().get_week_days()
-    print(week_days)
     return render_template("index.html", user=current_user, week_days=week_days)
 
 
