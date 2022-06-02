@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="modal fade" id="add_category_modal" tabindex="-1"
+     aria-labelledby="add_category_modal_label" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="add_category_modal_label">Добавление категории</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="/category/add" class="form" method="post">
+                    <input name="name" class="form-control mb-2" type="text" placeholder="name" required>
+                    <button type="submit" class="form-control btn btn-outline-dark w-100">Добавить</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container">
+    <div class="row">
+        {% for category in current_user.categories %}
+        <div class="col-md-2 shadow m-2 p-2 border rounded-2 border-primary" style="min-height:6rem;">
+            <blockquote class="blockquote d-flex ">
+                <p class="col">{{ category.name }}</p>
+            </blockquote>
+            <figcaption class="blockquote-footer">Количество задач: {{ category.todos|length }}
+            </figcaption>
+        </div>
+        {% endfor %}
+    </div>
+    <button class="btn btn-lg form-control btn-outline-dark mt-4" data-bs-toggle="modal"
+            data-bs-target="#add_category_modal">Создать категорию
+    </button>
+</div>
+{% endblock %}

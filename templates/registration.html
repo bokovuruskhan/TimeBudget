@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block login %}
+<div class="container w-50 shadow mt-4 p-4 bg-light">
+    <form action="/registration" method="post">
+        <input type="text" class="form-control mb-2" name="username" placeholder="Логин" required>
+        <input type="password" class="form-control mb-2" name="password" placeholder="Пароль" required>
+        <input type="password" class="form-control mb-2" name="password_again" placeholder="Пароль еще раз" required>
+        <button class="btn btn-outline-dark form-control mb-2" type="submit">Зарегистрироваться</button>
+        <a href="/login" class="btn btn-outline-dark form-control" type="submit">Уже есть аккаунт?</a>
+    </form>
+</div>
+{% endblock %}

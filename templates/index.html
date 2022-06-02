@@ -2,20 +2,26 @@
 
 {% block content %}
 
-{% for date in week %}
-<div class="modal fade" id="add_todo_in_day_{{week.get(date).id}}" tabindex="-1"
-     aria-labelledby="add_todo_in_day_{{week.get(date).id}}_label" aria-hidden="true">
+{% for date in week_days %}
+<div class="modal fade" id="add_todo_in_day_{{week_days.get(date).id}}" tabindex="-1"
+     aria-labelledby="add_todo_in_day_{{week_days.get(date).id}}_label" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="add_todo_in_day_{{week.get(date).id}}_label">Добавление задачи</h5>
+                <h5 class="modal-title" id="add_todo_in_day_{{week_days.get(date).id}}_label">Добавление задачи</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <form action="/todo/add" class="form " method="post">
-                    <input name="day_id" value="{{week.get(date).id}}" hidden>
-                    <input name="name" class="form-control" type="text" placeholder="name" required>
-                    <button type="submit" class="mt-2 form-control btn btn-outline-dark w-100">Добавить</button>
+                    <input name="day_id" value="{{week_days.get(date).id}}" hidden>
+                    <select name="category_id" class="form-select mb-2" required>
+                        {% for category in current_user.categories %}
+                        <option value="{{category.id}}">{{ category.name }}</option>
+                        {% endfor %}
+                    </select>
+                    <input name="name" class="form-control mb-2" type="text" placeholder="name" required>
+                    <input name="end_time" class="form-control mb-2" type="time" placeholder="name">
+                    <button type="submit" class="form-control btn btn-outline-dark w-100">Добавить</button>
                 </form>
             </div>
         </div>
@@ -23,56 +29,93 @@
 </div>
 {% endfor %}
 
-{% for date in week %}
-{% for todo in week.get(date).todos %}
+{% for date in week_days %}
+{% for todo in week_days.get(date).todos %}
+{% if todo.open %}
 <div class="modal fade" id="todo_card_{{todo.id}}" tabindex="-1"
-     aria-labelledby="add_todo_in_day_{{week.get(date).id}}_label" aria-hidden="true">
+     aria-labelledby="add_todo_in_day_{{week_days.get(date).id}}_label" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="todo_card_{{todo.id}}_label">Окно редактирования</h5>
+                <h5 class="modal-title" id="todo_card_{{todo.id}}_label">Окно редактирования <button type="submit" class="card-body btn btn-primary" disabled>
+                    {{ todo.category.name }}
+                </button></h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form action="/todo/edit" class="form" method="post">
-                    <blockquote class="blockquote ">
-                        <p>{{ todo.name }}</p>
-                    </blockquote>
-                    <div class="d-flex">
-                        <button type="submit" class="mt-2 form-control btn btn-outline-success m-1 w-50">Готово</button>
-                        <button type="submit" class="mt-2 form-control btn btn-outline-danger m-1 w-50">Неактуально</button>
+                <blockquote class="blockquote">
+                    <p>{{ todo.name }}</p>
+                </blockquote>
+                <div class="d-flex ">
+                    <form action="/todo/complete" class="form" method="post">
+                        <input name="todo_id" value="{{todo.id}}" hidden>
+                        <button type="submit" class="ms-2  btn btn-outline-success m-1 ">Готово</button>
+                        </button>
+                    </form>
+                    <form action="/todo/delete" class="form" method="post">
+                        <input name="todo_id" value="{{todo.id}}" hidden>
+                        <button type="submit" class="ms-2  btn btn-outline-danger m-1 ">Удалить
+                        </button>
+                    </form>
+                    <div>
+                        {% if todo.end_time %}
+                        <button type="submit" class="ms-2  btn btn-warning  m-1 " disabled>Нужно выполнить до: {{
+                            todo.end_time }}
+                        </button>
+                        {% endif %}
                     </div>
-                </form>
+                </div>
             </div>
         </div>
+
     </div>
 </div>
+{% endif %}
 {% endfor %}
 {% endfor %}
 
 <div class="container">
     <div class="row">
-        {% for date in week %}
+        {% for date in week_days %}
         <div class="col-md-2 shadow m-2 p-2 border border-dark" style="min-height:12rem; min-width:14rem;">
-            <blockquote class="blockquote ">
-                <p>{{ week.get(date).get_name() }}</p>
+            <blockquote class="blockquote d-flex ">
+                <p class="col">{{ week_days.get(date).get_name() }}</p>
+                <button class="btn  float-right btn-sm form-control btn-outline-dark" data-bs-toggle="modal"
+                        data-bs-target="#add_todo_in_day_{{week_days.get(date).id}}" style="height:2rem; width:2rem;">+
+                </button>
             </blockquote>
             <figcaption class="blockquote-footer">{{ date }}
             </figcaption>
-            {% for todo in week.get(date).todos %}
+            {% for todo in week_days.get(date).todos %}
             <div class="card m-2">
-                <button class="btn" data-bs-toggle="modal"
+                {% if todo.open %}
+                <button class="btn btn-outline-warning" data-bs-toggle="modal"
                         data-bs-target="#todo_card_{{todo.id}}">
                     {{ todo.name }}
                 </button>
+                {% else %}
+                <button class="btn text-success " disabled>
+                    <s>{{ todo.name }}</s>
+                </button>
+                {% endif %}
             </div>
             <p></p>
             {% endfor %}
-            <button class="btn btn-sm w-100 form-control btn-outline-dark" data-bs-toggle="modal"
-                    data-bs-target="#add_todo_in_day_{{week.get(date).id}}">+
-            </button>
         </div>
         {% endfor %}
     </div>
 </div>
+<select class="form-select form-select-lg mt-4" onchange="handleWeekSelect(this);">
+    <option selected>Текущая неделя</option>
+    {% for week in current_user.weeks %}
+    <option value="/week/{{week.id}}/show">Неделя#{{week.id}}</option>
+    {% endfor %}
+</select>
+
+<script type="text/javascript">
+  function handleWeekSelect(selectOption)
+  {
+    window.location.replace(selectOption.value);
+  };
+</script>
 {% endblock %}
